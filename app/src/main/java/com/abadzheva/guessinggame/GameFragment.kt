@@ -28,9 +28,11 @@ class GameFragment : Fragment() {
         _binding = FragmentGameBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        // start the game
         secretWordDisplay = deriveSecretWordDisplay()
         updateScreen()
 
+        // listen for button click
         binding.guessButton.setOnClickListener {
             makeGuess(
                 binding.guess.text
