@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.abadzheva.guessinggame.databinding.FragmentGameBinding
 
@@ -20,6 +21,8 @@ class GameFragment : Fragment() {
     private var incorrectGuesses = ""
     private var livesLeft = 8
 
+    lateinit var viewModel: GameViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,6 +30,8 @@ class GameFragment : Fragment() {
     ): View {
         _binding = FragmentGameBinding.inflate(inflater, container, false)
         val view = binding.root
+
+        viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
 
         // start the game
         secretWordDisplay = deriveSecretWordDisplay()
