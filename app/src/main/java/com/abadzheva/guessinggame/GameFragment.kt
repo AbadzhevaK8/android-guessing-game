@@ -13,14 +13,6 @@ class GameFragment : Fragment() {
     @Suppress("ktlint:standard:backing-property-naming")
     private var _binding: FragmentGameBinding? = null
     private val binding get() = _binding!!
-
-    private val words = listOf("Apple", "Banana", "Orange", "Grapes", "Watermelon")
-    private val secretWord = words.random().uppercase()
-    private var secretWordDisplay = ""
-    private var correctGuesses = ""
-    private var incorrectGuesses = ""
-    private var livesLeft = 8
-
     lateinit var viewModel: GameViewModel
 
     override fun onCreateView(
@@ -30,25 +22,23 @@ class GameFragment : Fragment() {
     ): View {
         _binding = FragmentGameBinding.inflate(inflater, container, false)
         val view = binding.root
+        viewModel = ViewModelProvider(this)[GameViewModel::class.java]
 
-        viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
-
-        // start the game
-        secretWordDisplay = deriveSecretWordDisplay()
         updateScreen()
 
         // listen for button click
         binding.guessButton.setOnClickListener {
-            makeGuess(
+            viewModel.makeGuess(
                 binding.guess.text
                     .toString()
                     .uppercase(),
             )
             binding.guess.text = null
             updateScreen()
-            if (isWon() || isLost()) {
+            if (viewModel.isWon() || viewModel.isLost()) {
                 val action =
-                    GameFragmentDirections.actionGameFragmentToResultFragment(wonLostMessage())
+                    GameFragmentDirections
+                        .actionGameFragmentToResultFragment(viewModel.wonLostMessage())
                 view.findNavController().navigate(action)
             }
         }
@@ -60,50 +50,10 @@ class GameFragment : Fragment() {
         _binding = null
     }
 
-    private fun isWon(): Boolean = secretWord.equals(secretWordDisplay, true)
-
-    private fun isLost(): Boolean = livesLeft <= 0
-
-    private fun wonLostMessage(): String {
-        var message = ""
-        if (isWon()) {
-            message = "You won!"
-        } else if (isLost()) {
-            message = "You lost!"
-        }
-        message += " The word was $secretWord."
-        return message
-    }
-
-    private fun makeGuess(guess: String) {
-        if (guess.length == 1) {
-            if (secretWord.contains(guess)) {
-                correctGuesses += guess
-                secretWordDisplay = deriveSecretWordDisplay()
-            } else {
-                incorrectGuesses += "$guess "
-                livesLeft--
-            }
-        }
-    }
-
     private fun updateScreen() {
-        binding.word.text = secretWordDisplay
-        binding.lives.text = getString(R.string.you_have_lives_left, livesLeft)
-        binding.incorrectGuesses.text = getString(R.string.incorrect_guesses, incorrectGuesses)
+        binding.word.text = viewModel.secretWordDisplay
+        binding.lives.text = getString(R.string.you_have_lives_left, viewModel.livesLeft)
+        binding.incorrectGuesses.text =
+            getString(R.string.incorrect_guesses, viewModel.incorrectGuesses)
     }
-
-    private fun deriveSecretWordDisplay(): String {
-        var display = ""
-        secretWord.forEach {
-            display += checkLetter(it.toString())
-        }
-        return display
-    }
-
-    private fun checkLetter(str: String) =
-        when (correctGuesses.contains(str)) {
-            true -> str
-            false -> "_"
-        }
 }
