@@ -1,5 +1,6 @@
 package com.abadzheva.guessinggame
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 
 class GameViewModel : ViewModel() {
@@ -53,5 +54,9 @@ class GameViewModel : ViewModel() {
         }
         message += " The word was $secretWord."
         return message
+    }
+
+    override fun onCleared() {
+        Log.i("MyViewModel", "ViewModel cleared")
     }
 }
