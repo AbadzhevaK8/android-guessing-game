@@ -1,11 +1,11 @@
 package com.abadzheva.guessinggame
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.abadzheva.guessinggame.databinding.FragmentGameBinding
@@ -25,7 +25,34 @@ class GameFragment : Fragment() {
         val view = binding.root
         viewModel = ViewModelProvider(this)[GameViewModel::class.java]
 
-        updateScreen()
+        viewModel.incorrectGuesses.observe(
+            viewLifecycleOwner,
+            Observer { newValue ->
+                binding.incorrectGuesses.text =
+                    getString(
+                        R.string.incorrect_guesses_new_value,
+                        newValue,
+                    )
+            },
+        )
+
+        viewModel.livesLeft.observe(
+            viewLifecycleOwner,
+            Observer { newValue ->
+                binding.lives.text =
+                    getString(
+                        R.string.you_have_lives_left_new_value,
+                        newValue.toString(),
+                    )
+            },
+        )
+
+        viewModel.secretWordDisplay.observe(
+            viewLifecycleOwner,
+            Observer { newValue ->
+                binding.word.text = newValue
+            },
+        )
 
         // listen for button click
         binding.guessButton.setOnClickListener {
@@ -35,7 +62,7 @@ class GameFragment : Fragment() {
                     .uppercase(),
             )
             binding.guess.text = null
-            updateScreen()
+
             if (viewModel.isWon() || viewModel.isLost()) {
                 val action =
                     GameFragmentDirections
@@ -49,12 +76,5 @@ class GameFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun updateScreen() {
-        binding.word.text = viewModel.secretWordDisplay
-        binding.lives.text = getString(R.string.you_have_lives_left, viewModel.livesLeft)
-        binding.incorrectGuesses.text =
-            getString(R.string.incorrect_guesses, viewModel.incorrectGuesses)
     }
 }

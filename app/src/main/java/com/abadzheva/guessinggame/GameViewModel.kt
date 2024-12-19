@@ -7,10 +7,10 @@ import androidx.lifecycle.ViewModel
 class GameViewModel : ViewModel() {
     val words = listOf("Apple", "Banana", "Orange", "Grapes", "Watermelon")
     val secretWord = words.random().uppercase()
-    var secretWordDisplay = MutableLiveData<String>()
+    val secretWordDisplay = MutableLiveData<String>()
     var correctGuesses = ""
-    var incorrectGuesses = MutableLiveData<String>("")
-    var livesLeft = MutableLiveData<Int>(8)
+    val incorrectGuesses = MutableLiveData<String>("")
+    val livesLeft = MutableLiveData<Int>(8)
 
     init {
         secretWordDisplay.value = deriveSecretWordDisplay()
