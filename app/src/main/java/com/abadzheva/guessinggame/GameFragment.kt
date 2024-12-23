@@ -54,6 +54,18 @@ class GameFragment : Fragment() {
             },
         )
 
+        viewModel.gameOver.observe(
+            viewLifecycleOwner,
+            Observer { newValue ->
+                if (newValue) {
+                    val action =
+                        GameFragmentDirections
+                            .actionGameFragmentToResultFragment(viewModel.wonLostMessage())
+                    view.findNavController().navigate(action)
+                }
+            },
+        )
+
         // listen for button click
         binding.guessButton.setOnClickListener {
             viewModel.makeGuess(
@@ -62,13 +74,6 @@ class GameFragment : Fragment() {
                     .uppercase(),
             )
             binding.guess.text = null
-
-            if (viewModel.isWon() || viewModel.isLost()) {
-                val action =
-                    GameFragmentDirections
-                        .actionGameFragmentToResultFragment(viewModel.wonLostMessage())
-                view.findNavController().navigate(action)
-            }
         }
         return view
     }
