@@ -9,4 +9,5 @@
     <string name="start_new_game">Start new game</string>
     <string name="incorrect_guesses_new_value">Incorrect guesses: %1$s</string>
     <string name="you_have_lives_left_new_value">You have %1$s lives left</string>
+    <string name="finish_game">Finish game</string>
 </resources>
