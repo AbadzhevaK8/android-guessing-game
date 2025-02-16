@@ -23,22 +23,22 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:letterSpacing="0.1"
-            android:textSize="36sp"
-            android:text="@{gameViewModel.secretWordDisplay}" />
+            android:text="@{gameViewModel.secretWordDisplay}"
+            android:textSize="36sp" />
 
         <TextView
             android:id="@+id/lives"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:text="@{@string/you_have_lives_left(gameViewModel.livesLeft)}"/>
+            android:text="@{@string/you_have_lives_left(gameViewModel.livesLeft)}"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/incorrect_guesses"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:text="@{@string/incorrect_guesses(gameViewModel.incorrectGuesses)}" />
+            android:text="@{@string/incorrect_guesses(gameViewModel.incorrectGuesses)}"
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/guess"
@@ -64,7 +64,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/finish_game"
-            android:onClick="@{()->gameViewModel.finishGame()}" />
+            android:onClick="@{()->gameViewModel.finishGame()}"
+            android:text="@string/finish_game" />
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/compose_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </layout>
