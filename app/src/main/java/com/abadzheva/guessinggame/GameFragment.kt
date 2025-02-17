@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -14,11 +15,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -92,18 +97,53 @@ fun FinishGameButton(clicked: () -> Unit) {
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun EnterGuess(guess: String, changed: (String) -> Unit) {
+fun EnterGuess(
+    guess: String,
+    changed: (String) -> Unit,
+) {
     TextField(
         value = guess,
         label = { Text("Guess a letter") },
-        onValueChange = changed
+        onValueChange = changed,
     )
 }
+
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun GuessButton(clicked: () -> Unit) {
     Button(onClick = clicked) {
         Text("Guess!")
+    }
+}
+
+@Suppress("ktlint:standard:function-naming")
+@Composable
+fun IncorrectGuessesText(viewModel: GameViewModel) {
+    val incorrectGuesses = viewModel.incorrectGuesses.observeAsState()
+    incorrectGuesses.value?.let {
+        Text(stringResource(R.string.incorrect_guesses, it))
+    }
+}
+
+@Suppress("ktlint:standard:function-naming")
+@Composable
+fun LiveLeftText(viewModel: GameViewModel) {
+    val livesLeft = viewModel.livesLeft.observeAsState()
+    livesLeft.value?.let {
+        Text(stringResource(R.string.you_have_lives_left, it))
+    }
+}
+
+@Suppress("ktlint:standard:function-naming")
+@Composable
+fun SecretWordDisplay(viewModel: GameViewModel) {
+    val display = viewModel.secretWordDisplay.observeAsState()
+    display.value?.let {
+        Text(
+            text = it,
+            letterSpacing = 0.1.em,
+            fontSize = 36.sp,
+        )
     }
 }
 
@@ -119,6 +159,14 @@ fun GameFragmentContent(viewModel: GameViewModel) {
                 .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            SecretWordDisplay(viewModel)
+        }
+        LiveLeftText(viewModel)
+        IncorrectGuessesText(viewModel)
         EnterGuess(guess.value) { guess.value = it }
 
         Column(
