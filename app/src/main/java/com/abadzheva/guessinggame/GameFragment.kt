@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
@@ -28,12 +29,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import com.abadzheva.guessinggame.databinding.FragmentGameBinding
 
 class GameFragment : Fragment() {
-    @Suppress("ktlint:standard:backing-property-naming")
-    private var _binding: FragmentGameBinding? = null
-    private val binding get() = _binding!!
     lateinit var viewModel: GameViewModel
 
     override fun onCreateView(
@@ -41,22 +38,7 @@ class GameFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding =
-            FragmentGameBinding.inflate(inflater, container, false).apply {
-                composeView.setContent {
-                    MaterialTheme {
-                        Surface {
-                            GameFragmentContent(viewModel)
-                        }
-                    }
-                }
-            }
-        val view = binding.root
         viewModel = ViewModelProvider(this)[GameViewModel::class.java]
-
-        binding.gameViewModel = viewModel
-        binding.lifecycleOwner = viewLifecycleOwner
-
         viewModel.gameOver.observe(
             viewLifecycleOwner,
             Observer { newValue ->
@@ -64,26 +46,19 @@ class GameFragment : Fragment() {
                     val action =
                         GameFragmentDirections
                             .actionGameFragmentToResultFragment(viewModel.wonLostMessage())
-                    view.findNavController().navigate(action)
+                    view?.findNavController()?.navigate(action)
                 }
             },
         )
-
-        // listen for button click
-        binding.guessButton.setOnClickListener {
-            viewModel.makeGuess(
-                binding.guess.text
-                    .toString()
-                    .uppercase(),
-            )
-            binding.guess.text = null
+        return ComposeView(requireContext()).apply {
+            setContent {
+                MaterialTheme {
+                    Surface {
+                        GameFragmentContent(viewModel)
+                    }
+                }
+            }
         }
-        return view
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
 

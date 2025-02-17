@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/gameFragment">
     <fragment
         android:id="@+id/gameFragment"
         android:name="com.abadzheva.guessinggame.GameFragment"
-        android:label="fragment_game"
-        tools:layout="@layout/fragment_game" >
+        android:label="fragment_game">
         <action
             android:id="@+id/action_gameFragment_to_resultFragment"
             app:destination="@id/resultFragment"
@@ -18,7 +16,7 @@
     <fragment
         android:id="@+id/resultFragment"
         android:name="com.abadzheva.guessinggame.ResultFragment"
-        android:label="fragment_result" >
+        android:label="fragment_result">
         <argument
             android:name="result"
             app:argType="string" />
